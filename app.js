@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import htm from 'htm';
 
@@ -520,7 +520,7 @@ function App() {
     });
     DAYS.forEach((d, dIdx) => {
       d.deepBlocks.forEach((block, bIdx) => {
-        const key = \`d\${dIdx}-deep-\${bIdx}\`;
+        const key = `d${dIdx}-deep-${bIdx}`;
         if (stats[block.subject]) {
           stats[block.subject].total++;
           if (done.has(key)) stats[block.subject].completed++;
@@ -529,7 +529,7 @@ function App() {
       d.shallowBlocks.forEach((block, bIdx) => {
         if (block.subject && stats[block.subject]) {
           stats[block.subject].total++;
-          const key = \`d\${dIdx}-shallow-\${bIdx}\`;
+          const key = `d${dIdx}-shallow-${bIdx}`;
           if (done.has(key)) stats[block.subject].completed++;
         }
       });
@@ -548,8 +548,8 @@ function App() {
 
   const day = DAYS[dayIdx];
   const allBlocks = [
-    ...(day.deepBlocks || []).map((_, i) => \`d\${dayIdx}-deep-\${i}\`),
-    ...(day.shallowBlocks || []).map((_, i) => \`d\${dayIdx}-shallow-\${i}\`)
+    ...(day.deepBlocks || []).map((_, i) => `d${dayIdx}-deep-${i}`),
+    ...(day.shallowBlocks || []).map((_, i) => `d${dayIdx}-shallow-${i}`)
   ];
   const dayDone = allBlocks.filter(k => done.has(k)).length;
   const dayPct = allBlocks.length ? Math.round((dayDone / allBlocks.length) * 100) : 100;
@@ -566,8 +566,8 @@ function App() {
     { id: "roadmap", icon: "🚀", label: "Roadmap" },
   ];
 
-  return html\`
-    <div style=\${{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
+  return html`
+    <div style=${{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       
       <header class="app-header">
         <div class="header-inner">
@@ -580,311 +580,311 @@ function App() {
 
       <main class="main-content">
         
-        \${tab === "exam" && html\`
+        ${tab === "exam" && html`
           <div class="anim-fade-up" key="exam-tab">
-            <div class="glass" style=\${{ padding: "10px 16px", marginBottom: "14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", borderRadius: "var(--radius-md)" }}>
-              <span style=\${{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 600 }}>Overall Study Progress</span>
-              <div style=\${{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <div class="progress-bar-track" style=\${{ width: "100px" }}>
-                  <div class="progress-bar-fill" style=\${{ width: \`\${overallPct}%\` }} />
+            <div class="glass" style=${{ padding: "10px 16px", marginBottom: "14px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", borderRadius: "var(--radius-md)" }}>
+              <span style=${{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 600 }}>Overall Study Progress</span>
+              <div style=${{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <div class="progress-bar-track" style=${{ width: "100px" }}>
+                  <div class="progress-bar-fill" style=${{ width: `${overallPct}%` }} />
                 </div>
-                <span class="progress-text" style=\${{ minWidth: "32px", textAlign: "right" }}>\${overallPct}%</span>
+                <span class="progress-text" style=${{ minWidth: "32px", textAlign: "right" }}>${overallPct}%</span>
               </div>
             </div>
 
             <div class="day-scroller">
-              \${DAYS.map((d, i) => {
+              ${DAYS.map((d, i) => {
                 const hasExam = !!d.examToday;
                 const isToday = d.today;
                 const active = dayIdx === i;
-                return html\`
-                  <button key=\${i} class=\${\`day-pill \${active ? "active" : ""} \${hasExam ? "has-exam" : ""}\`} onClick=\${() => setDayIdx(i)}>
-                    <div class="day-name">\${d.day}</div>
-                    <div class="day-date">\${d.date}</div>
-                    \${isToday && html\`<span class="dot-today" />\`}
-                    \${hasExam && html\`<span class="dot-exam" />\`}
+                return html`
+                  <button key=${i} class=${`day-pill ${active ? "active" : ""} ${hasExam ? "has-exam" : ""}`} onClick=${() => setDayIdx(i)}>
+                    <div class="day-name">${d.day}</div>
+                    <div class="day-date">${d.date}</div>
+                    ${isToday && html`<span class="dot-today" />`}
+                    ${hasExam && html`<span class="dot-exam" />`}
                   </button>
-                \`;
+                `;
               })}
             </div>
 
-            <div class=\${\`glass status-banner \${examSubject ? "exam-day" : "study-day"}\`}>
+            <div class=${`glass status-banner ${examSubject ? "exam-day" : "study-day"}`}>
               <div>
-                <div class="status-meta">\${day.day} · \${day.date}</div>
+                <div class="status-meta">${day.day} · ${day.date}</div>
                 <div class="status-title">
-                  \${examSubject ? html\`
+                  ${examSubject ? html`
                     <span class="badge badge-exam">⚠ EXAM DAY</span>
-                    <span>\${examSubject.icon} \${examSubject.label} — \${examSubject.exam.split(', ')[1] || ''}</span>
-                  \` : html\`<span>📚 Strategic Study Day</span>\`}
+                    <span>${examSubject.icon} ${examSubject.label} — ${examSubject.exam.split(', ')[1] || ''}</span>
+                  ` : html`<span>📚 Strategic Study Day</span>`}
                 </div>
               </div>
               <div class="progress-ring">
-                <span class="progress-count">\${dayDone}/\${allBlocks.length}</span>
+                <span class="progress-count">${dayDone}/${allBlocks.length}</span>
                 <div class="progress-bar-track">
-                  <div class="progress-bar-fill" style=\${{ width: \`\${dayPct}%\` }} />
+                  <div class="progress-bar-fill" style=${{ width: `${dayPct}%` }} />
                 </div>
-                <span class="progress-text">\${dayPct}%</span>
+                <span class="progress-text">${dayPct}%</span>
               </div>
             </div>
 
-            \${day.deepBlocks && day.deepBlocks.length > 0 && html\`
-              <div style=\${{ marginBottom: "var(--space-xl)" }}>
+            ${day.deepBlocks && day.deepBlocks.length > 0 && html`
+              <div style=${{ marginBottom: "var(--space-xl)" }}>
                 <div class="section-heading">
                   <span class="section-heading-icon">🧠</span>
-                  <span class="section-heading-text" style=\${{ color: "var(--color-purple)" }}>Deep Work — High Cognitive Load</span>
+                  <span class="section-heading-text" style=${{ color: "var(--color-purple)" }}>Deep Work — High Cognitive Load</span>
                 </div>
-                <div class="stagger" style=\${{ display: "flex", flexDirection: "column", gap: "var(--space-md)" }}>
-                  \${day.deepBlocks.map((b, i) => {
+                <div class="stagger" style=${{ display: "flex", flexDirection: "column", gap: "var(--space-md)" }}>
+                  ${day.deepBlocks.map((b, i) => {
                     const subj = SUBJECTS[b.subject];
-                    const key = \`d\${dayIdx}-deep-\${i}\`;
+                    const key = `d${dayIdx}-deep-${i}`;
                     const isDone = done.has(key);
-                    return html\`
-                      <div key=\${key} class=\${\`task-card is-deep \${isDone ? "is-done" : ""}\`} style=\${{ '--subject-color': subj.color, borderLeftColor: subj.color }} onClick=\${() => toggle(key)}>
-                        <div class="check-box">\${isDone ? "✓" : ""}</div>
-                        <div style=\${{ flex: 1, minWidth: 0 }}>
+                    return html`
+                      <div key=${key} class=${`task-card is-deep ${isDone ? "is-done" : ""}`} style=${{ '--subject-color': subj.color, borderLeftColor: subj.color }} onClick=${() => toggle(key)}>
+                        <div class="check-box">${isDone ? "✓" : ""}</div>
+                        <div style=${{ flex: 1, minWidth: 0 }}>
                           <div class="deep-meta">
-                            <span class="badge badge-subject" style=\${{ background: \`\${subj.color}22\`, color: subj.color, borderColor: \`\${subj.color}30\` }}>\${subj.icon} \${subj.short}</span>
-                            <span style=\${{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 600 }}>\${b.slot}</span>
-                            <span class="badge" style=\${{ background: "rgba(52, 211, 153, 0.15)", color: "var(--accent)", fontSize: "9px" }}>📈 \${b.coverage}</span>
+                            <span class="badge badge-subject" style=${{ background: `${subj.color}22`, color: subj.color, borderColor: `${subj.color}30` }}>${subj.icon} ${subj.short}</span>
+                            <span style=${{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 600 }}>${b.slot}</span>
+                            <span class="badge" style=${{ background: "rgba(52, 211, 153, 0.15)", color: "var(--accent)", fontSize: "9px" }}>📈 ${b.coverage}</span>
                           </div>
-                          <p class="deep-topics">\${b.topics}</p>
+                          <p class="deep-topics">${b.topics}</p>
                           <div class="deep-details">
-                            <div class="deep-detail-row" style=\${{ color: "var(--color-purple)" }}><strong>🎯</strong> <span>\${b.strategy}</span></div>
-                            <div class="deep-detail-row" style=\${{ color: "var(--text-muted)", fontStyle: "italic" }}><strong>🔬</strong> <span>\${b.why}</span></div>
+                            <div class="deep-detail-row" style=${{ color: "var(--color-purple)" }}><strong>🎯</strong> <span>${b.strategy}</span></div>
+                            <div class="deep-detail-row" style=${{ color: "var(--text-muted)", fontStyle: "italic" }}><strong>🔬</strong> <span>${b.why}</span></div>
                           </div>
                         </div>
                       </div>
-                    \`;
+                    `;
                   })}
                 </div>
               </div>
-            \`}
+            `}
 
-            \${day.shallowBlocks && day.shallowBlocks.length > 0 && html\`
-              <div style=\${{ marginBottom: "var(--space-xl)" }}>
+            ${day.shallowBlocks && day.shallowBlocks.length > 0 && html`
+              <div style=${{ marginBottom: "var(--space-xl)" }}>
                 <div class="section-heading">
                   <span class="section-heading-icon">📝</span>
-                  <span class="section-heading-text" style=\${{ color: "var(--accent)" }}>Shallow & Review Blocks</span>
+                  <span class="section-heading-text" style=${{ color: "var(--accent)" }}>Shallow & Review Blocks</span>
                 </div>
-                <div class="stagger" style=\${{ display: "flex", flexDirection: "column", gap: "var(--space-sm)" }}>
-                  \${day.shallowBlocks.map((b, i) => {
+                <div class="stagger" style=${{ display: "flex", flexDirection: "column", gap: "var(--space-sm)" }}>
+                  ${day.shallowBlocks.map((b, i) => {
                     const subj = b.subject ? SUBJECTS[b.subject] : null;
-                    const key = \`d\${dayIdx}-shallow-\${i}\`;
+                    const key = `d${dayIdx}-shallow-${i}`;
                     const isDone = done.has(key);
                     const bs = BLOCK_STYLE[b.type] || BLOCK_STYLE.shallow;
-                    return html\`
-                      <div key=\${key} class=\${\`task-card is-shallow \${isDone ? "is-done" : ""}\`} onClick=\${() => toggle(key)} style=\${{ borderLeftColor: bs.border }}>
-                        <div class="check-box">\${isDone ? "✓" : ""}</div>
-                        <div style=\${{ flex: 1, minWidth: 0 }}>
-                          <div style=\${{ display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center", marginBottom: "3px" }}>
-                            <span class="shallow-label" style=\${{ color: bs.border }}>\${bs.icon} \${b.label}</span>
-                            <span class="shallow-time">\${b.slot}</span>
-                            \${subj && html\`<span class="badge" style=\${{ background: \`\${subj.color}22\`, color: subj.color, fontSize: "9px", padding: "1px 6px" }}>\${subj.short}</span>\`}
+                    return html`
+                      <div key=${key} class=${`task-card is-shallow ${isDone ? "is-done" : ""}`} onClick=${() => toggle(key)} style=${{ borderLeftColor: bs.border }}>
+                        <div class="check-box">${isDone ? "✓" : ""}</div>
+                        <div style=${{ flex: 1, minWidth: 0 }}>
+                          <div style=${{ display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center", marginBottom: "3px" }}>
+                            <span class="shallow-label" style=${{ color: bs.border }}>${bs.icon} ${b.label}</span>
+                            <span class="shallow-time">${b.slot}</span>
+                            ${subj && html`<span class="badge" style=${{ background: `${subj.color}22`, color: subj.color, fontSize: "9px", padding: "1px 6px" }}>${subj.short}</span>`}
                           </div>
-                          <p class="shallow-task">\${b.task}</p>
+                          <p class="shallow-task">${b.task}</p>
                         </div>
                       </div>
-                    \`;
+                    `;
                   })}
                 </div>
               </div>
-            \`}
+            `}
 
             <div class="glass neuro-tip">
               <span class="neuro-tip-icon">🔬</span>
               <div>
                 <div class="neuro-tip-label">Neuroscience Principle</div>
-                <p class="neuro-tip-text">\${day.tip}</p>
+                <p class="neuro-tip-text">${day.tip}</p>
               </div>
             </div>
 
             <div class="day-nav">
-              <button class="day-nav-btn" onClick=\${() => setDayIdx(prev => Math.max(0, prev - 1))} disabled=\${dayIdx === 0}>← Previous Day</button>
-              <button class="day-nav-btn" onClick=\${() => setDayIdx(prev => Math.min(DAYS.length - 1, prev + 1))} disabled=\${dayIdx === DAYS.length - 1}>Next Day →</button>
+              <button class="day-nav-btn" onClick=${() => setDayIdx(prev => Math.max(0, prev - 1))} disabled=${dayIdx === 0}>← Previous Day</button>
+              <button class="day-nav-btn" onClick=${() => setDayIdx(prev => Math.min(DAYS.length - 1, prev + 1))} disabled=${dayIdx === DAYS.length - 1}>Next Day →</button>
             </div>
           </div>
-        \`}
+        `}
 
-        \${tab === "neuro" && html\`
+        ${tab === "neuro" && html`
           <div class="anim-fade-up" key="neuro-tab">
-            <div class="glass" style=\${{ padding: "var(--space-xl)", marginBottom: "var(--space-xl)" }}>
-              <h2 style=\${{ fontSize: "18px", fontWeight: 800, color: "#fff", marginBottom: "6px", fontFamily: "var(--font-display)" }}>Circadian Alertness Cycle</h2>
-              <p style=\${{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.6 }}>Align subject difficulty with your hormonal peaks to optimize memory formation.</p>
+            <div class="glass" style=${{ padding: "var(--space-xl)", marginBottom: "var(--space-xl)" }}>
+              <h2 style=${{ fontSize: "18px", fontWeight: 800, color: "#fff", marginBottom: "6px", fontFamily: "var(--font-display)" }}>Circadian Alertness Cycle</h2>
+              <p style=${{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.6 }}>Align subject difficulty with your hormonal peaks to optimize memory formation.</p>
             </div>
-            <div class="neuro-timeline" style=\${{ marginBottom: "var(--space-xl)" }}>
+            <div class="neuro-timeline" style=${{ marginBottom: "var(--space-xl)" }}>
               <div class="neuro-timeline-line" />
               <div class="neuro-nodes">
-                \${NEURO_PRINCIPLES.slice(0, 5).map(node => html\`
-                  <div key=\${node.id} class=\${\`neuro-node \${activeNeuroNode === node.id ? "active" : ""}\`} onClick=\${() => setActiveNeuroNode(node.id)}>
-                    <div class="neuro-node-circle">\${node.icon}</div>
-                    <div class="neuro-node-time">\${node.time.split(' ')[0]}</div>
+                ${NEURO_PRINCIPLES.slice(0, 5).map(node => html`
+                  <div key=${node.id} class=${`neuro-node ${activeNeuroNode === node.id ? "active" : ""}`} onClick=${() => setActiveNeuroNode(node.id)}>
+                    <div class="neuro-node-circle">${node.icon}</div>
+                    <div class="neuro-node-time">${node.time.split(' ')[0]}</div>
                   </div>
-                \`)}
+                `)}
               </div>
             </div>
-            \${(() => {
+            ${(() => {
               const n = NEURO_PRINCIPLES.find(p => p.id === activeNeuroNode);
-              return n && html\`
-                <div class="glass neuro-detail-card anim-slide-in" key=\${n.id} style=\${{ marginBottom: "var(--space-xl)" }}>
-                  <div style=\${{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", flexWrap: "wrap" }}>
-                    <span style=\${{ fontSize: "22px" }}>\${n.icon}</span>
-                    <h3 style=\${{ fontSize: "15px", color: "#fff", fontWeight: 800 }}>\${n.title}</h3>
-                    <span class="badge" style=\${{ background: "rgba(42, 157, 143, 0.2)", color: "var(--accent)" }}>\${n.time}</span>
+              return n && html`
+                <div class="glass neuro-detail-card anim-slide-in" key=${n.id} style=${{ marginBottom: "var(--space-xl)" }}>
+                  <div style=${{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px", flexWrap: "wrap" }}>
+                    <span style=${{ fontSize: "22px" }}>${n.icon}</span>
+                    <h3 style=${{ fontSize: "15px", color: "#fff", fontWeight: 800 }}>${n.title}</h3>
+                    <span class="badge" style=${{ background: "rgba(42, 157, 143, 0.2)", color: "var(--accent)" }}>${n.time}</span>
                   </div>
-                  <p style=\${{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.65 }}>\${n.desc}</p>
+                  <p style=${{ fontSize: "13px", color: "var(--text-secondary)", lineHeight: 1.65 }}>${n.desc}</p>
                 </div>
-              \`;
+              `;
             })()}
             <div class="neuro-grid stagger">
-              \${NEURO_PRINCIPLES.map(p => html\`
-                <div key=\${p.id} class="glass neuro-principle-card">
-                  <div style=\${{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "8px" }}>
-                    <div class="neuro-principle-icon-wrap">\${p.icon}</div>
+              ${NEURO_PRINCIPLES.map(p => html`
+                <div key=${p.id} class="glass neuro-principle-card">
+                  <div style=${{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "8px" }}>
+                    <div class="neuro-principle-icon-wrap">${p.icon}</div>
                     <div>
-                      <h4 style=\${{ fontSize: "13px", fontWeight: 800, color: "#fff" }}>\${p.title}</h4>
-                      <div style=\${{ fontSize: "10px", color: "var(--text-muted)", fontWeight: 600 }}>\${p.time}</div>
+                      <h4 style=${{ fontSize: "13px", fontWeight: 800, color: "#fff" }}>${p.title}</h4>
+                      <div style=${{ fontSize: "10px", color: "var(--text-muted)", fontWeight: 600 }}>${p.time}</div>
                     </div>
                   </div>
-                  <p style=\${{ fontSize: "12px", color: "var(--text-secondary)", lineHeight: 1.6 }}>\${p.desc}</p>
+                  <p style=${{ fontSize: "12px", color: "var(--text-secondary)", lineHeight: 1.6 }}>${p.desc}</p>
                 </div>
-              \`)}
+              `)}
             </div>
           </div>
-        \`}
+        `}
 
-        \${tab === "subjects" && html\`
+        ${tab === "subjects" && html`
           <div class="anim-fade-up" key="subjects-tab">
-            <div class="glass" style=\${{ padding: "var(--space-xl)", marginBottom: "var(--space-xl)" }}>
-              <h2 style=\${{ fontSize: "18px", fontWeight: 800, color: "#fff", marginBottom: "4px", fontFamily: "var(--font-display)" }}>Academic Priority Matrix</h2>
-              <p style=\${{ fontSize: "13px", color: "var(--text-secondary)" }}>Exam dates, credit weights, and study progress per subject.</p>
+            <div class="glass" style=${{ padding: "var(--space-xl)", marginBottom: "var(--space-xl)" }}>
+              <h2 style=${{ fontSize: "18px", fontWeight: 800, color: "#fff", marginBottom: "4px", fontFamily: "var(--font-display)" }}>Academic Priority Matrix</h2>
+              <p style=${{ fontSize: "13px", color: "var(--text-secondary)" }}>Exam dates, credit weights, and study progress per subject.</p>
             </div>
-            <div class="glass" style=\${{ padding: "12px 16px", marginBottom: "var(--space-lg)", display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", borderLeft: "3px solid var(--color-red)" }}>
-              <span style=\${{ fontSize: "14px" }}>⏰</span>
-              <span style=\${{ fontSize: "11px", fontWeight: 700, color: "var(--color-red)", letterSpacing: "0.04em", textTransform: "uppercase" }}>Next Exam:</span>
-              \${(() => {
+            <div class="glass" style=${{ padding: "12px 16px", marginBottom: "var(--space-lg)", display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap", borderLeft: "3px solid var(--color-red)" }}>
+              <span style=${{ fontSize: "14px" }}>⏰</span>
+              <span style=${{ fontSize: "11px", fontWeight: 700, color: "var(--color-red)", letterSpacing: "0.04em", textTransform: "uppercase" }}>Next Exam:</span>
+              ${(() => {
                 const sorted = Object.entries(SUBJECTS).sort((a, b) => a[1].daysLeft - b[1].daysLeft);
                 const next = sorted[0];
-                return next && html\`
-                  <span style=\${{ fontSize: "12px", color: "#fff", fontWeight: 700 }}>\${next[1].icon} \${next[1].label} — \${next[1].exam}</span>
-                  <span class="badge badge-exam" style=\${{ marginLeft: "auto" }}>\${next[1].daysLeft} days left</span>
-                \`;
+                return next && html`
+                  <span style=${{ fontSize: "12px", color: "#fff", fontWeight: 700 }}>${next[1].icon} ${next[1].label} — ${next[1].exam}</span>
+                  <span class="badge badge-exam" style=${{ marginLeft: "auto" }}>${next[1].daysLeft} days left</span>
+                `;
               })()}
             </div>
             <div class="subject-grid stagger">
-              \${Object.entries(SUBJECTS).map(([key, value]) => {
+              ${Object.entries(SUBJECTS).map(([key, value]) => {
                 const ps = PRIORITY_STYLE[value.priority] || PRIORITY_STYLE.medium;
                 const stats = subjectCompletionStats[key] || { total: 0, completed: 0 };
                 const pct = stats.total ? Math.round((stats.completed / stats.total) * 100) : 0;
-                return html\`
-                  <div key=\${key} class="glass subject-card" style=\${{ '--subject-color': value.color }}>
-                    <div style=\${{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: value.color, borderRadius: "3px 3px 0 0" }}></div>
+                return html`
+                  <div key=${key} class="glass subject-card" style=${{ '--subject-color': value.color }}>
+                    <div style=${{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: value.color, borderRadius: "3px 3px 0 0" }}></div>
                     <div class="subject-card-head">
                       <div class="subject-card-info">
-                        <span class="subject-card-icon">\${value.icon}</span>
+                        <span class="subject-card-icon">${value.icon}</span>
                         <div>
-                          <h4 class="subject-card-name">\${value.label}</h4>
-                          <span class="subject-card-sub">\${value.short} · \${value.ch} CH</span>
+                          <h4 class="subject-card-name">${value.label}</h4>
+                          <span class="subject-card-sub">${value.short} · ${value.ch} CH</span>
                         </div>
                       </div>
-                      <span class="badge" style=\${{ background: ps.bg, color: ps.color }}>\${ps.label}</span>
+                      <span class="badge" style=${{ background: ps.bg, color: ps.color }}>${ps.label}</span>
                     </div>
                     <div class="subject-stats">
                       <div class="subject-stat-row">
                         <span class="subject-stat-label">Exam:</span>
-                        <strong class="subject-stat-value">\${value.exam}</strong>
+                        <strong class="subject-stat-value">${value.exam}</strong>
                       </div>
                       <div class="subject-stat-row">
                         <span class="subject-stat-label">Countdown:</span>
-                        <strong style=\${{ color: value.daysLeft <= 3 ? "var(--color-red)" : value.daysLeft <= 7 ? "var(--color-orange)" : "var(--accent)", fontWeight: 700 }}>
-                          \${value.daysLeft} day\${value.daysLeft !== 1 ? 's' : ''}
+                        <strong style=${{ color: value.daysLeft <= 3 ? "var(--color-red)" : value.daysLeft <= 7 ? "var(--color-orange)" : "var(--accent)", fontWeight: 700 }}>
+                          ${value.daysLeft} day${value.daysLeft !== 1 ? 's' : ''}
                         </strong>
                       </div>
                       <div class="subject-stat-row">
                         <span class="subject-stat-label">Sessions:</span>
-                        <span class="subject-stat-value">\${value.sessions}</span>
+                        <span class="subject-stat-value">${value.sessions}</span>
                       </div>
                     </div>
                     <div class="subject-progress">
                       <div class="subject-progress-head">
-                        <span style=\${{ color: "var(--text-secondary)" }}>Study Progress</span>
-                        <span style=\${{ fontWeight: 700, color: "var(--accent)" }}>\${stats.completed}/\${stats.total} (\${pct}%)</span>
+                        <span style=${{ color: "var(--text-secondary)" }}>Study Progress</span>
+                        <span style=${{ fontWeight: 700, color: "var(--accent)" }}>${stats.completed}/${stats.total} (${pct}%)</span>
                       </div>
                       <div class="subject-progress-bar">
-                        <div class="subject-progress-fill" style=\${{ width: \`\${pct}%\`, background: value.color }} />
+                        <div class="subject-progress-fill" style=${{ width: `${pct}%`, background: value.color }} />
                       </div>
                     </div>
                   </div>
-                \`;
+                `;
               })}
             </div>
           </div>
-        \`}
+        `}
 
-        \${tab === "roadmap" && html\`
+        ${tab === "roadmap" && html`
           <div class="anim-fade-up" key="roadmap-tab">
-            <div class="glass" style=\${{ padding: "var(--space-xl)", marginBottom: "var(--space-xl)" }}>
-              <h2 style=\${{ fontSize: "18px", fontWeight: 800, color: "#fff", marginBottom: "4px", fontFamily: "var(--font-display)" }}>Career Roadmap</h2>
-              <p style=\${{ fontSize: "13px", color: "var(--text-secondary)" }}>Strategic path: IIUM CS graduate → high-income software engineering (Jul 2026 – Dec 2027).</p>
+            <div class="glass" style=${{ padding: "var(--space-xl)", marginBottom: "var(--space-xl)" }}>
+              <h2 style=${{ fontSize: "18px", fontWeight: 800, color: "#fff", marginBottom: "4px", fontFamily: "var(--font-display)" }}>Career Roadmap</h2>
+              <p style=${{ fontSize: "13px", color: "var(--text-secondary)" }}>Strategic path: IIUM CS graduate → high-income software engineering (Jul 2026 – Dec 2027).</p>
             </div>
             <div class="phase-selector">
-              \${PHASES.map(p => html\`
-                <div key=\${p.id} class=\${\`glass phase-btn \${activePhase === p.id ? "glass-glow" : ""}\`} onClick=\${() => setActivePhase(p.id)}
-                  style=\${{ borderColor: activePhase === p.id ? p.color : undefined, boxShadow: activePhase === p.id ? \`0 0 20px \${p.color}15\` : undefined }}>
-                  <div class="phase-btn-label">\${p.label}</div>
-                  <div class="phase-btn-period">\${p.period}</div>
-                  <span class="badge" style=\${{ background: \`\${p.color}15\`, color: p.color, fontSize: "9px" }}>\${p.income}</span>
+              ${PHASES.map(p => html`
+                <div key=${p.id} class=${`glass phase-btn ${activePhase === p.id ? "glass-glow" : ""}`} onClick=${() => setActivePhase(p.id)}
+                  style=${{ borderColor: activePhase === p.id ? p.color : undefined, boxShadow: activePhase === p.id ? `0 0 20px ${p.color}15` : undefined }}>
+                  <div class="phase-btn-label">${p.label}</div>
+                  <div class="phase-btn-period">${p.period}</div>
+                  <span class="badge" style=${{ background: `${p.color}15`, color: p.color, fontSize: "9px" }}>${p.income}</span>
                 </div>
-              \`)}
+              `)}
             </div>
-            \${(() => {
+            ${(() => {
               const ph = PHASES.find(p => p.id === activePhase);
-              return ph && html\`
-                <div class="glass phase-detail anim-scale-in" key=\${ph.id} style=\${{ borderLeft: \`4px solid \${ph.color}\` }}>
-                  <div style=\${{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "var(--space-lg)" }}>
+              return ph && html`
+                <div class="glass phase-detail anim-scale-in" key=${ph.id} style=${{ borderLeft: `4px solid ${ph.color}` }}>
+                  <div style=${{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "var(--space-lg)" }}>
                     <div>
-                      <span class="badge" style=\${{ background: \`\${ph.color}15\`, color: ph.color, marginBottom: "4px" }}>\${ph.label} · \${ph.period}</span>
-                      <h3 style=\${{ fontSize: "17px", color: "#fff", fontWeight: 850 }}>\${ph.title}</h3>
+                      <span class="badge" style=${{ background: `${ph.color}15`, color: ph.color, marginBottom: "4px" }}>${ph.label} · ${ph.period}</span>
+                      <h3 style=${{ fontSize: "17px", color: "#fff", fontWeight: 850 }}>${ph.title}</h3>
                     </div>
-                    <div style=\${{ background: "rgba(42, 157, 143, 0.1)", border: "1px solid rgba(42, 157, 143, 0.2)", borderRadius: "var(--radius-sm)", padding: "8px 14px", textAlign: "right" }}>
-                      <div style=\${{ fontSize: "9px", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase" }}>Target</div>
-                      <div style=\${{ fontSize: "16px", color: "var(--accent)", fontWeight: 900 }}>\${ph.income}</div>
+                    <div style=${{ background: "rgba(42, 157, 143, 0.1)", border: "1px solid rgba(42, 157, 143, 0.2)", borderRadius: "var(--radius-sm)", padding: "8px 14px", textAlign: "right" }}>
+                      <div style=${{ fontSize: "9px", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase" }}>Target</div>
+                      <div style=${{ fontSize: "16px", color: "var(--accent)", fontWeight: 900 }}>${ph.income}</div>
                     </div>
                   </div>
-                  <div style=\${{ marginBottom: "var(--space-xl)" }}>
-                    <h4 style=\${{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "4px" }}>Strategic Focus</h4>
-                    <p style=\${{ fontSize: "13px", color: "var(--text-primary)", lineHeight: 1.6 }}>\${ph.focus}</p>
+                  <div style=${{ marginBottom: "var(--space-xl)" }}>
+                    <h4 style=${{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "4px" }}>Strategic Focus</h4>
+                    <p style=${{ fontSize: "13px", color: "var(--text-primary)", lineHeight: 1.6 }}>${ph.focus}</p>
                   </div>
                   <div>
-                    <h4 style=\${{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "12px" }}>Milestones</h4>
-                    <div class="stagger" style=\${{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                      \${ph.milestones.map((m, idx) => html\`
-                        <div key=\${idx} class="phase-milestone">
-                          <span class="phase-milestone-num" style=\${{ color: ph.color, background: \`\${ph.color}10\` }}>\${idx + 1}</span>
-                          <span class="phase-milestone-text">\${m}</span>
+                    <h4 style=${{ fontSize: "11px", color: "var(--text-secondary)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "12px" }}>Milestones</h4>
+                    <div class="stagger" style=${{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      ${ph.milestones.map((m, idx) => html`
+                        <div key=${idx} class="phase-milestone">
+                          <span class="phase-milestone-num" style=${{ color: ph.color, background: `${ph.color}10` }}>${idx + 1}</span>
+                          <span class="phase-milestone-text">${m}</span>
                         </div>
-                      \`)}
+                      `)}
                     </div>
                   </div>
                 </div>
-              \`;
+              `;
             })()}
           </div>
-        \`}
+        `}
 
       </main>
 
       <nav class="bottom-nav" id="mobile-nav">
-        \${tabs.map(t => html\`
-          <button key=\${t.id} class=\${\`nav-btn \${tab === t.id ? "active" : ""}\`} onClick=\${() => setTab(t.id)}>
-            <span class="nav-btn-icon">\${t.icon}</span>
-            <span class="nav-btn-label">\${t.label}</span>
+        ${tabs.map(t => html`
+          <button key=${t.id} class=${`nav-btn ${tab === t.id ? "active" : ""}`} onClick=${() => setTab(t.id)}>
+            <span class="nav-btn-icon">${t.icon}</span>
+            <span class="nav-btn-label">${t.label}</span>
           </button>
-        \`)}
+        `)}
       </nav>
 
     </div>
-  \`;
+  `;
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(html\`<\${App} />\`);
+root.render(html`<${App} />`);
