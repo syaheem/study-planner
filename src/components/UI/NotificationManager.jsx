@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { DAYS, SUBJECTS } from '../../data';
 
 export default function NotificationManager() {
-  const [permission, setPermission] = useState(Notification.permission);
+  const [permission, setPermission] = useState(() => {
+    return 'Notification' in window ? Notification.permission : 'denied';
+  });
   const [notifiedBlocks, setNotifiedBlocks] = useState(() => {
     try {
       const saved = localStorage.getItem('studyPlannerNotified');
@@ -13,6 +15,7 @@ export default function NotificationManager() {
   });
 
   const requestPermission = () => {
+    if (!('Notification' in window)) return;
     Notification.requestPermission().then(perm => {
       setPermission(perm);
     });
