@@ -5,15 +5,28 @@ import ScheduleTab from './components/Tabs/ScheduleTab';
 import ScienceTab from './components/Tabs/ScienceTab';
 import MatrixTab from './components/Tabs/MatrixTab';
 import RoadmapTab from './components/Tabs/RoadmapTab';
+import CountdownBadge from './components/UI/CountdownBadge';
+import NotificationManager from './components/UI/NotificationManager';
 import './index.css';
-
 export default function App() {
   const [activeTab, setActiveTab] = useState('exam');
   const [dayIdx, setDayIdx] = useState(() => {
     const idx = DAYS.findIndex(d => d.today);
     return idx !== -1 ? idx : 0;
   });
-  const [doneTasks, setDoneTasks] = useState(new Set());
+  const [doneTasks, setDoneTasks] = useState(() => {
+    try {
+      const saved = localStorage.getItem('studyPlannerDoneTasks');
+      if (saved) return new Set(JSON.parse(saved));
+    } catch (e) {
+      console.error('Failed to load done tasks', e);
+    }
+    return new Set();
+  });
+
+  useEffect(() => {
+    localStorage.setItem('studyPlannerDoneTasks', JSON.stringify([...doneTasks]));
+  }, [doneTasks]);
 
   // Change background based on tab
   const bgMap = {
@@ -39,6 +52,7 @@ export default function App() {
 
   return (
     <>
+      <NotificationManager />
       <header className="app-header">
         <div className="header-inner">
           <div>
@@ -46,9 +60,7 @@ export default function App() {
             <h1 className="header-title">Study & Career Planner</h1>
           </div>
           {nextExam && (
-            <div className="header-badge">
-              ⚡ {nextExam.daysLeft}d to {nextExam.short}
-            </div>
+            <CountdownBadge exam={nextExam} />
           )}
         </div>
       </header>
