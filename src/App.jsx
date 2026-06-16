@@ -9,40 +9,36 @@ import './index.css';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('exam');
-  const [dayIdx, setDayIdx] = useState(0);
+  const [dayIdx, setDayIdx] = useState(() => {
+    const idx = DAYS.findIndex(d => d.today);
+    return idx !== -1 ? idx : 0;
+  });
   const [doneTasks, setDoneTasks] = useState(new Set());
 
-  // Set initial dayIdx based on today
-  useEffect(() => {
-    const todayIndex = DAYS.findIndex(d => d.today);
-    if (todayIndex !== -1) setDayIdx(todayIndex);
-  }, []);
-
   // Change background based on tab
+  const bgMap = {
+    exam:     'assets/bg_schedule.png',
+    neuro:    'assets/bg_science.png',
+    subjects: 'assets/bg_matrix.png',
+    roadmap:  'assets/bg_roadmap.png',
+  };
+
   useEffect(() => {
-    const bgMap = {
-      'exam': 'assets/bg_schedule.png',
-      'neuro': 'assets/bg_science.png',
-      'subjects': 'assets/bg_matrix.png',
-      'roadmap': 'assets/bg_roadmap.png'
-    };
     document.body.style.backgroundImage = `url('${bgMap[activeTab]}')`;
   }, [activeTab]);
 
   const toggleDone = (id) => {
     setDoneTasks(prev => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
   };
 
-  const today = DAYS.find(d => d.today);
-  const nextExam = today ? Object.values(SUBJECTS).reduce((a, b) => a.daysLeft < b.daysLeft ? a : b) : null;
+  const nextExam = Object.values(SUBJECTS).reduce((a, b) => a.daysLeft < b.daysLeft ? a : b);
 
   return (
-    <div id="app-container">
+    <>
       <header className="app-header">
         <div className="header-inner">
           <div>
@@ -51,20 +47,20 @@ export default function App() {
           </div>
           {nextExam && (
             <div className="header-badge">
-              <span dangerouslySetInnerHTML={{ __html: '⚡' }} /> {nextExam.daysLeft}d to {nextExam.short}
+              ⚡ {nextExam.daysLeft}d to {nextExam.short}
             </div>
           )}
         </div>
       </header>
 
       <main className="main-content">
-        {activeTab === 'exam' && <ScheduleTab dayIdx={dayIdx} setDayIdx={setDayIdx} doneTasks={doneTasks} toggleDone={toggleDone} />}
-        {activeTab === 'neuro' && <ScienceTab />}
+        {activeTab === 'exam'     && <ScheduleTab dayIdx={dayIdx} setDayIdx={setDayIdx} doneTasks={doneTasks} toggleDone={toggleDone} />}
+        {activeTab === 'neuro'    && <ScienceTab />}
         {activeTab === 'subjects' && <MatrixTab />}
-        {activeTab === 'roadmap' && <RoadmapTab />}
+        {activeTab === 'roadmap'  && <RoadmapTab />}
       </main>
 
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
-    </div>
+    </>
   );
 }

@@ -3,13 +3,12 @@ import { SUBJECTS, PRIORITY_STYLE } from '../../data';
 import Badge from '../UI/Badge';
 
 export default function MatrixTab() {
-  const subjectStats = Object.entries(SUBJECTS).map(([key, value]) => ({ key, value }));
-  // Sort by days left
-  subjectStats.sort((a, b) => a.value.daysLeft - b.value.daysLeft);
+  const sorted = Object.entries(SUBJECTS).sort(([,a],[,b]) => a.daysLeft - b.daysLeft);
 
   return (
     <div className="anim-fade-up">
-      <div className="glass mb-16" style={{ padding: '20px' }}>
+      {/* Header */}
+      <div className="glass stagger" style={{ padding: '20px', marginBottom: '16px' }}>
         <h2 style={{ fontSize: '18px', fontWeight: 900, color: '#fff', marginBottom: '4px', fontFamily: 'var(--font-display)' }}>
           Academic Priority Matrix
         </h2>
@@ -18,41 +17,53 @@ export default function MatrixTab() {
         </p>
       </div>
 
-      <div className="grid-tablet-2 stagger">
-        {subjectStats.map(({ key, value }, i) => {
-          const p = PRIORITY_STYLE[value.priority];
-          return (
-            <div key={key} className="subject-card glass mb-12" style={{ animationDelay: `${i * 0.05}s` }}>
-              <div className="flex justify-between items-start mb-12">
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <span className="subject-card-icon" dangerouslySetInnerHTML={{ __html: value.icon }}></span>
-                  <div>
-                    <h3 className="fs-14 fw-800 col-white">{value.label}</h3>
-                    <div className="fs-11 col-muted mt-4">
-                      {value.exam} • {value.ch} CH
-                    </div>
-                  </div>
+      {sorted.map(([key, s], i) => {
+        const p = PRIORITY_STYLE[s.priority];
+        return (
+          <div key={key} className="subject-card stagger" style={{ marginBottom: '12px', animationDelay: `${i * 0.06}s` }}>
+            {/* Top colour bar */}
+            <div className="subject-card-glow" style={{ background: s.color }}></div>
+
+            <div className="subject-card-head">
+              <div className="subject-card-info">
+                <div className="subject-card-icon">{s.icon}</div>
+                <div>
+                  <div className="subject-card-name">{s.label}</div>
+                  <div className="subject-card-sub">{s.exam} · {s.ch} CH</div>
                 </div>
-                <Badge background={p.bg} color={p.color}>{p.label}</Badge>
               </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <div style={{ flex: 1, background: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: 'var(--r-sm)' }}>
-                  <div className="fs-10 fw-800 uppercase col-muted mb-4">Days Left</div>
-                  <div style={{ fontSize: '16px', fontWeight: 900, color: '#fff', fontFamily: 'var(--font-display)' }}>
-                    {value.daysLeft}
-                  </div>
-                </div>
-                <div style={{ flex: 1, background: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: 'var(--r-sm)' }}>
-                  <div className="fs-10 fw-800 uppercase col-muted mb-4">Sessions</div>
-                  <div style={{ fontSize: '16px', fontWeight: 900, color: 'var(--cyan)', fontFamily: 'var(--font-display)' }}>
-                    {value.sessions}
-                  </div>
-                </div>
+              <Badge background={p.bg} color={p.color}>{p.label}</Badge>
+            </div>
+
+            <div className="subject-stats">
+              <div>
+                <div className="subject-stat-label">Days Left</div>
+                <div className="subject-stat-value" style={{ color: s.daysLeft <= 3 ? 'var(--red)' : s.daysLeft <= 7 ? 'var(--yellow)' : 'var(--cyan)' }}>{s.daysLeft}</div>
+              </div>
+              <div>
+                <div className="subject-stat-label">Sessions</div>
+                <div className="subject-stat-value" style={{ color: 'var(--accent)' }}>{s.sessions}</div>
+              </div>
+              <div>
+                <div className="subject-stat-label">Credits</div>
+                <div className="subject-stat-value" style={{ color: '#fff' }}>{s.ch}</div>
+              </div>
+              <div>
+                <div className="subject-stat-label">Priority</div>
+                <div className="subject-stat-value" style={{ color: p.color }}>{p.label}</div>
               </div>
             </div>
-          );
-        })}
-      </div>
+
+            <div className="subject-progress-head">
+              <span style={{ color: 'var(--text-muted)' }}>Study Progress</span>
+              <span style={{ color: 'var(--accent)', fontWeight: 700 }}>0%</span>
+            </div>
+            <div className="progress-track">
+              <div className="progress-fill" style={{ width: '0%', background: s.color }}></div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

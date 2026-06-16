@@ -12,113 +12,154 @@ export default function ScheduleTab({ dayIdx, setDayIdx, doneTasks, toggleDone }
   const dayPct = allBlocks.length ? Math.round(dayDone / allBlocks.length * 100) : 100;
   const examSubject = day.examToday ? SUBJECTS[day.examToday] : null;
 
+  // Overall progress across all days
+  const total = DAYS.reduce((acc, d, dIdx) => {
+    const all = [
+      ...(d.deepBlocks || []).map((_,i) => `d${dIdx}-deep-${i}`),
+      ...(d.shallowBlocks || []).map((_,i) => `d${dIdx}-shallow-${i}`)
+    ];
+    acc.done += all.filter(k => doneTasks.has(k)).length;
+    acc.total += all.length;
+    return acc;
+  }, { done: 0, total: 0 });
+  const overallPct = total.total ? Math.round(total.done / total.total * 100) : 0;
+
   return (
     <div className="anim-fade-up">
-      <div className="date-selector mb-20 stagger">
+      {/* Overall progress */}
+      <div className="overall-progress-bar stagger">
+        <span className="overall-progress-label">📅 Season Progress</span>
+        <div className="progress-track" style={{ flex: 1 }}>
+          <div className="progress-fill" style={{ width: `${overallPct}%` }}></div>
+        </div>
+        <span className="overall-progress-pct">{overallPct}%</span>
+      </div>
+
+      {/* Day selector */}
+      <div className="day-scroller stagger" style={{ animationDelay: '0.05s' }}>
         {DAYS.map((d, idx) => (
-          <button 
+          <button
             key={idx}
-            className={`date-btn ${idx === dayIdx ? 'active' : ''}`}
+            className={`day-pill ${idx === dayIdx ? 'active' : ''}`}
             onClick={() => setDayIdx(idx)}
           >
-            <div className="date-btn-day">{d.day}</div>
-            <div className="date-btn-date">{d.date.split(' ')[0]}</div>
-            {d.today && <div className="date-btn-dot"></div>}
+            <div className="day-name">{d.day}</div>
+            <div className="day-date">{d.date.split(' ')[0]}</div>
+            {d.today && <div className="dot-today"></div>}
+            {d.examToday && !d.today && <div className="dot-exam"></div>}
           </button>
         ))}
       </div>
 
-      <div className="status-banner mb-24 stagger" style={{ animationDelay: '0.1s' }}>
-        <div className="banner-bg"></div>
-        <div className="banner-content flex justify-between items-center">
-          <div>
-            <h2 className="fs-18 fw-900 mb-4 font-display">
-              {examSubject ? (
-                <span dangerouslySetInnerHTML={{ __html: `${examSubject.icon} ${examSubject.label} — ${examSubject.exam.split(', ')[1] || ''}` }} />
-              ) : (
-                <><span dangerouslySetInnerHTML={{ __html: '📚' }} /> Strategic Study Day</>
-              )}
-            </h2>
-            <p className="fs-12 col-secondary">
-              {examSubject ? <span dangerouslySetInnerHTML={{ __html: '<i class="ph-bold ph-warning"></i> EXAM DAY' }} /> : 'Execute the plan. Trust the process.'}
-            </p>
+      {/* Status banner */}
+      <div className={`status-banner stagger ${examSubject ? 'exam-day' : 'study-day'}`} style={{ animationDelay: '0.1s' }}>
+        <div>
+          <div className="status-meta">{day.date}</div>
+          <div className="status-title">
+            {examSubject
+              ? <><span>{examSubject.icon}</span> {examSubject.label} — EXAM DAY</>
+              : <><span>📚</span> Strategic Study Day</>
+            }
           </div>
-          <div className="progress-circle-wrap">
-            <svg viewBox="0 0 36 36" className="circular-chart">
-              <path className="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              <path className="circle" strokeDasharray={`${dayPct}, 100`} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            </svg>
-            <div className="progress-text">{dayPct}%</div>
+          {day.tip && <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px', lineHeight: 1.5 }}>{day.tip}</p>}
+        </div>
+        <div className="progress-ring">
+          <div className="progress-count">{dayPct}%</div>
+          <div className="progress-text">{dayDone}/{allBlocks.length} done</div>
+          <div className="progress-track-sm">
+            <div className="progress-fill" style={{ width: `${dayPct}%` }}></div>
           </div>
         </div>
       </div>
 
-      <h3 className="fs-12 fw-800 uppercase col-muted mb-16 stagger" style={{ animationDelay: '0.15s' }}>Deep Work Blocks</h3>
-      <div className="grid-tablet-2 stagger" style={{ animationDelay: '0.2s' }}>
-        {day.deepBlocks?.map((b, i) => {
-          const id = `d${dayIdx}-deep-${i}`;
-          const isDone = doneTasks.has(id);
-          const subj = SUBJECTS[b.subject];
-          const bs = BLOCK_STYLE[b.type];
+      {/* Deep work blocks */}
+      {day.deepBlocks && day.deepBlocks.length > 0 && (
+        <>
+          <h3 className="section-heading stagger" style={{ animationDelay: '0.15s' }}>
+            <span className="section-heading-icon">🧠</span>
+            <span className="section-heading-text">Deep Work Blocks</span>
+          </h3>
+          {day.deepBlocks.map((b, i) => {
+            const id = `d${dayIdx}-deep-${i}`;
+            const isDone = doneTasks.has(id);
+            const subj = SUBJECTS[b.subject];
+            const bs = BLOCK_STYLE[b.type] || BLOCK_STYLE.deep;
 
-          return (
-            <div key={id} className={`task-card glass mb-12 ${isDone ? 'is-done' : ''}`} onClick={() => toggleDone(id)}>
-              <div className="flex justify-between items-start mb-12">
-                <div className="flex-1">
+            return (
+              <div
+                key={id}
+                className={`task-card stagger ${isDone ? 'is-done' : ''}`}
+                style={{ flexDirection: 'column', borderLeftColor: bs.border, marginBottom: '12px', animationDelay: `${0.2 + i * 0.05}s` }}
+                onClick={() => toggleDone(id)}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
                   <div className="deep-meta">
-                    <Badge extraClass="badge-deep" background={bs.border + '22'} color={bs.border}>
-                      <span dangerouslySetInnerHTML={{ __html: `${bs.icon} ${bs.label}` }} />
-                    </Badge>
-                    <Badge extraClass="badge-subject" background={subj.color + '22'} color={subj.color}>
-                      <span dangerouslySetInnerHTML={{ __html: `${subj.icon} ${subj.short}` }} />
-                    </Badge>
-                    <span className="fs-11 fw-700 col-muted">{b.slot}</span>
+                    <Badge background={bs.border + '22'} color={bs.border}>{bs.icon} {bs.label}</Badge>
+                    {subj && <Badge background={subj.color + '22'} color={subj.color}>{subj.icon} {subj.short}</Badge>}
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)' }}>{b.slot}</span>
                   </div>
-                  <h4 className="deep-topics">{b.topics}</h4>
+                  <div className="check-box" style={isDone ? { background: 'var(--green)', borderColor: 'var(--green)', color: '#000' } : {}}>
+                    {isDone && '✓'}
+                  </div>
                 </div>
-                <div className="check-box" dangerouslySetInnerHTML={{ __html: isDone ? '<i class="ph-bold ph-check"></i>' : '' }}></div>
+                <div className="deep-topics">{b.topics}</div>
+                <div className="deep-details">
+                  <div className="deep-detail-row">
+                    <span style={{ color: 'var(--text-muted)', fontWeight: 700, flexShrink: 0 }}>Why:</span>
+                    <span style={{ color: 'var(--text-secondary)', flex: 1 }}>{b.why}</span>
+                  </div>
+                  <div className="deep-detail-row">
+                    <span style={{ color: 'var(--text-muted)', fontWeight: 700, flexShrink: 0 }}>Strategy:</span>
+                    <span style={{ color: 'var(--text-secondary)', flex: 1 }}>{b.strategy}</span>
+                  </div>
+                </div>
               </div>
-              <div className="deep-details">
-                <div className="deep-detail-row">
-                  <span className="col-muted fw-700">Why:</span>
-                  <span className="col-secondary flex-1">{b.why}</span>
-                </div>
-                <div className="deep-detail-row">
-                  <span className="col-muted fw-700">Strategy:</span>
-                  <span className="col-secondary flex-1">{b.strategy}</span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </>
+      )}
 
-      <h3 className="fs-12 fw-800 uppercase col-muted mb-16 mt-20 stagger" style={{ animationDelay: '0.25s' }}>Shallow & Review</h3>
-      <div className="grid-tablet-2 stagger" style={{ animationDelay: '0.3s' }}>
-        {day.shallowBlocks?.map((b, i) => {
-          const id = `d${dayIdx}-shallow-${i}`;
-          const isDone = doneTasks.has(id);
-          const subj = SUBJECTS[b.subject];
-          const bs = BLOCK_STYLE[b.type];
+      {/* Shallow blocks */}
+      {day.shallowBlocks && day.shallowBlocks.length > 0 && (
+        <>
+          <h3 className="section-heading stagger" style={{ marginTop: '20px', animationDelay: '0.3s' }}>
+            <span className="section-heading-icon">📝</span>
+            <span className="section-heading-text">Shallow & Review</span>
+          </h3>
+          {day.shallowBlocks.map((b, i) => {
+            const id = `d${dayIdx}-shallow-${i}`;
+            const isDone = doneTasks.has(id);
+            const subj = b.subject ? SUBJECTS[b.subject] : null;
+            const bs = BLOCK_STYLE[b.type] || BLOCK_STYLE.shallow;
 
-          return (
-            <div key={id} className={`task-card glass mb-8 ${isDone ? 'is-done' : ''}`} onClick={() => toggleDone(id)}>
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-8">
-                    <span className="shallow-label" dangerouslySetInnerHTML={{ __html: `${bs.icon} ${b.label}` }} />
-                    <Badge extraClass="badge-subject" background={subj.color + '22'} color={subj.color}>
-                      <span dangerouslySetInnerHTML={{ __html: `${subj.icon} ${subj.short}` }} />
-                    </Badge>
+            return (
+              <div
+                key={id}
+                className={`task-card stagger ${isDone ? 'is-done' : ''}`}
+                style={{ borderLeftColor: bs.border, marginBottom: '8px', animationDelay: `${0.35 + i * 0.04}s` }}
+                onClick={() => toggleDone(id)}
+              >
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                    <span className="shallow-label">{bs.icon} {b.label}</span>
+                    {subj && <Badge background={subj.color + '22'} color={subj.color}>{subj.icon} {subj.short}</Badge>}
                   </div>
                   <div className="shallow-task">{b.task}</div>
                   <div className="shallow-time">{b.slot}</div>
                 </div>
-                <div className="check-box" dangerouslySetInnerHTML={{ __html: isDone ? '<i class="ph-bold ph-check"></i>' : '' }}></div>
+                <div className="check-box" style={isDone ? { background: 'var(--green)', borderColor: 'var(--green)', color: '#000' } : {}}>
+                  {isDone && '✓'}
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </>
+      )}
+
+      {/* Day nav */}
+      <div className="day-nav stagger" style={{ animationDelay: '0.5s' }}>
+        <button className="day-nav-btn" disabled={dayIdx === 0} onClick={() => setDayIdx(dayIdx - 1)}>← Prev Day</button>
+        <button className="day-nav-btn" disabled={dayIdx === DAYS.length - 1} onClick={() => setDayIdx(dayIdx + 1)}>Next Day →</button>
       </div>
     </div>
   );
