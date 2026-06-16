@@ -62,12 +62,26 @@
       justify-content: center;
       -webkit-font-smoothing: antialiased;
       overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      transition: background-image 0.5s ease-in-out;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 10, 18, 0.85);
+      z-index: -1;
+      pointer-events: none;
     }
 
     #root {
       width: 100%;
       max-width: 480px;
-      background: var(--bg-app);
+      background: rgba(15, 15, 26, 0.3);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       height: 100dvh;
       display: flex;
       flex-direction: column;
@@ -754,12 +768,11 @@
     .nav-btn-icon { 
       font-size: 22px; 
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
-      filter: grayscale(1);
-      opacity: 0.8;
+      opacity: 0.5;
     }
     .nav-btn.active .nav-btn-icon { 
       transform: scale(1.1); 
-      filter: grayscale(0) drop-shadow(0 4px 12px var(--accent-glow)); 
+      filter: drop-shadow(0 4px 12px var(--accent-glow)); 
       opacity: 1;
     }
     .nav-btn-label { 
@@ -1656,6 +1669,14 @@ const TABS = [
 function render() {
   const root = document.getElementById('root');
   root.innerHTML = '';
+
+  const bgMap = {
+    'exam': 'assets/bg_schedule.png',
+    'neuro': 'assets/bg_science.png',
+    'subjects': 'assets/bg_matrix.png',
+    'roadmap': 'assets/bg_roadmap.png'
+  };
+  document.body.style.backgroundImage = `url('${bgMap[state.tab]}')`;
 
   // Header
   const header = el('header', { className: 'app-header' });
