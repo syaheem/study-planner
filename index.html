@@ -806,6 +806,42 @@
     .font-display { font-family: var(--font-display); }
     .uppercase { text-transform: uppercase; letter-spacing: 0.08em; }
     .lh-16 { line-height: 1.6; }
+    /* ═══════════════════════════════════════════════════════════════
+       TABLET RESPONSIVENESS
+    ═══════════════════════════════════════════════════════════════ */
+    @media (min-width: 768px) {
+      #root {
+        max-width: 840px;
+        box-shadow: 0 0 40px rgba(0,0,0,0.5);
+      }
+      .bottom-nav {
+        max-width: 840px;
+        border-radius: 20px 20px 0 0;
+      }
+      .app-header {
+        padding: 32px 40px 24px;
+      }
+      .main-content {
+        padding: 24px 40px 100px;
+      }
+      .task-card, .subject-card, .neuro-principle-card, .phase-btn {
+        height: 100%;
+      }
+      .grid-tablet-2 {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px !important;
+      }
+      .neuro-timeline-line {
+        top: 24px;
+      }
+      .neuro-node-circle {
+        width: 48px; height: 48px; font-size: 20px;
+      }
+      .status-banner {
+        padding: 24px 32px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1253,7 +1289,7 @@ function renderExamTab() {
     const hText = span('section-heading-text col-purple', 'Deep Work — High Cognitive Load');
     heading.appendChild(hText);
     section.appendChild(heading);
-    const cards = div('stagger flex flex-col gap-12');
+    const cards = div('stagger flex flex-col gap-12 grid-tablet-2');
     day.deepBlocks.forEach((b, i) => {
       const subj = SUBJECTS[b.subject];
       const key = `d${state.dayIdx}-deep-${i}`;
@@ -1298,7 +1334,7 @@ function renderExamTab() {
     heading.appendChild(span('section-heading-icon', '📝'));
     heading.appendChild(span('section-heading-text col-cyan', 'Shallow & Review Blocks'));
     section.appendChild(heading);
-    const cards = div('stagger flex flex-col gap-8');
+    const cards = div('stagger flex flex-col gap-8 grid-tablet-2');
     day.shallowBlocks.forEach((b, i) => {
       const subj = b.subject ? SUBJECTS[b.subject] : null;
       const key = `d${state.dayIdx}-shallow-${i}`;
@@ -1402,7 +1438,7 @@ function renderNeuroTab() {
   }
 
   // Principles grid
-  const grid = div('stagger flex flex-col gap-12');
+  const grid = div('stagger flex flex-col gap-12 grid-tablet-2');
   NEURO_PRINCIPLES.forEach(p => {
     const card = div('neuro-principle-card');
     card.innerHTML = `
@@ -1450,7 +1486,7 @@ function renderSubjectsTab() {
   }
 
   // Subject cards
-  const grid = div('stagger flex flex-col gap-12');
+  const grid = div('stagger flex flex-col gap-12 grid-tablet-2');
   Object.entries(SUBJECTS).forEach(([key, value]) => {
     const ps = PRIORITY_STYLE[value.priority] || PRIORITY_STYLE.medium;
     const stats = subjectStats[key] || { total:0, completed:0 };
@@ -1514,7 +1550,7 @@ function renderRoadmapTab() {
   container.appendChild(header);
 
   // Phase selector
-  const selector = div('stagger flex flex-col gap-8 mb-16');
+  const selector = div('stagger flex flex-col gap-8 mb-16 grid-tablet-2');
   PHASES.forEach(p => {
     const btn = div(`phase-btn ${state.activePhase === p.id ? 'active' : ''}`);
     if (state.activePhase === p.id) {
